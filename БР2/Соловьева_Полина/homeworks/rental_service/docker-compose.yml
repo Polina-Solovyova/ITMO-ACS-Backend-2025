@@ -1,0 +1,92 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - backend
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    restart: always
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
+    ports:
+      - "5672:5672"   # порт для приложений
+      - "15672:15672" # web-интерфейс управления
+    networks:
+      - backend
+
+  users-service:
+    build:
+      context: ./users_service
+    container_name: users-service
+    restart: always
+    environment:
+      DATABASE_URL: postgres://user:password@postgres:5432/users
+      PORT: 5001
+      RABBITMQ_URL: amqp://user:password@rabbitmq:5672
+    ports:
+      - "5001:5001"
+    depends_on:
+      - postgres
+      - rabbitmq
+    networks:
+      - backend
+
+  property-service:
+    build:
+      context: ./property_service
+    container_name: property-service
+    restart: always
+    environment:
+      DATABASE_URL: postgres://user:password@postgres:5432/property
+      PORT: 5002
+      RABBITMQ_URL: amqp://user:password@rabbitmq:5672
+      USERS_SERVICE_URL: "http://users-service:5001/api/users"
+    ports:
+      - "5002:5002"
+    depends_on:
+      - postgres
+      - rabbitmq
+    networks:
+      - backend
+
+  rental-service:
+    build:
+      context: ./rental_service
+    container_name: rental-service
+    restart: always
+    environment:
+      DATABASE_URL: postgres://user:password@postgres:5432/rental
+      PORT: 5003
+      RABBITMQ_URL: amqp://user:password@rabbitmq:5672
+      USERS_SERVICE_URL: "http://users-service:5001/api/users"
+      PROPERTY_SERVICE_URL: "http://property-service:5002/api/properties"
+    ports:
+      - "5003:5003"
+    depends_on:
+      - postgres
+      - property-service
+      - rabbitmq
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
+
+volumes:
+  postgres_data:
