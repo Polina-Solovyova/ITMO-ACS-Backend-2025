@@ -21,7 +21,7 @@ jobs:
         key: ${{ secrets.SERVER_SSH_KEY }}
         source: "БР2/Соловьева_Полина/homeworks/rental_service/*"
         target: "~/rental_service"
-        strip_components: 3
+        strip_components: 2
 
     - name: Run Docker Compose on server
       uses: appleboy/ssh-action@v0.1.7
