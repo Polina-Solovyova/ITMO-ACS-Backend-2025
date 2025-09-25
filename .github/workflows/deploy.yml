@@ -62,6 +62,7 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
             mkdir -p ~/rental_service/rental_service/rental_service
+            touch ~/rental_service/rental_service/rental_service/.env
             cat <<-EOT > ~/rental_service/rental_service/rental_service/.env
             PORT=5003
             API_URL=http://${{ secrets.API_HOST }}:5003/api
