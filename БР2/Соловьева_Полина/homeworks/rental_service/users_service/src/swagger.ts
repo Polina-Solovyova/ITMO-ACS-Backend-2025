@@ -12,9 +12,7 @@ export const setupSwagger = (app: Express, title: string, port: number) => {
         description: `${title} - RESTful API`,
       },
       servers: [
-        {
-          url: `http://localhost:${port}/api`,
-        },
+        { url: process.env.API_URL || 'http://localhost:5001' }
       ],
       components: {
         securitySchemes: {
