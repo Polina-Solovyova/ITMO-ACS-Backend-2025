@@ -32,7 +32,7 @@ jobs:
           script: |
             mkdir -p ~/rental_service/rental_service/users_service
             touch ~/rental_service/rental_service/users_service/.env
-            cat <<-EOT > ~/rental_service/rental_service/users_service.env
+            cat <<-EOT > ~/rental_service/rental_service/users_service/.env
             PORT=5001
             API_URL=http://${{ secrets.API_HOST }}:5001/api
             DATABASE_URL=${{ secrets.USERS_SERVICE_DB_URL }}
