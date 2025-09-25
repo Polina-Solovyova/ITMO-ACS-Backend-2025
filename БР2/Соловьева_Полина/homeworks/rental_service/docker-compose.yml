@@ -38,6 +38,7 @@ services:
       DATABASE_URL: postgres://user:password@postgres:5432/users
       PORT: 5001
       RABBITMQ_URL: amqp://user:password@rabbitmq:5672
+      API_URL: http://84.201.136.135:5001/api
     ports:
       - "5001:5001"
     depends_on:
@@ -56,6 +57,7 @@ services:
       PORT: 5002
       RABBITMQ_URL: amqp://user:password@rabbitmq:5672
       USERS_SERVICE_URL: "http://users-service:5001/api/users"
+      API_URL: http://84.201.136.135:5002/api
     ports:
       - "5002:5002"
     depends_on:
@@ -75,6 +77,7 @@ services:
       RABBITMQ_URL: amqp://user:password@rabbitmq:5672
       USERS_SERVICE_URL: "http://users-service:5001/api/users"
       PROPERTY_SERVICE_URL: "http://property-service:5002/api/properties"
+      API_URL: http://84.201.136.135:5003/api
     ports:
       - "5003:5003"
     depends_on:
