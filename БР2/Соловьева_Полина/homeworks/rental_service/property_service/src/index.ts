@@ -15,6 +15,9 @@ import { setupSwagger } from "./swagger";
 // Subscribers
 import "./subscribers/rental.subscriber";
 
+import dotenv from "dotenv";
+dotenv.config();
+
 const app = express();
 app.use(express.json());
 

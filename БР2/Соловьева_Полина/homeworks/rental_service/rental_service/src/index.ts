@@ -12,6 +12,9 @@ import { loggerMiddleware } from "./middleware/loggerMiddleware";
 import { errorMiddleware } from "./middleware/errorMiddleware";
 import { setupSwagger } from "./swagger";
 
+import dotenv from "dotenv";
+dotenv.config();
+
 const app = express();
 app.use(express.json());
 
