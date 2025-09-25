@@ -20,6 +20,6 @@ export class Rental {
   @Column()
   status: string;
 
-  @Column({ type: "datetime", default: () => "CURRENT_TIMESTAMP" })
+  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
   created_at: Date;
 }
