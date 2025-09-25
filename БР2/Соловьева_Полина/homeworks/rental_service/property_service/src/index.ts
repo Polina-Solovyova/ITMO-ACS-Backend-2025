@@ -35,17 +35,14 @@ setupSwagger(app, "Property Service API", 5002);
 // Глобальная обработка ошибок
 app.use(errorMiddleware);
 
-const PORT = process.env.PORT || 5002;
+const PORT = Number(process.env.PORT) || 5002;
+const HOST = process.env.HOST || "0.0.0.0";
 
 AppDataSource.initialize()
-  .then(async () => {
-    console.log("Property Service Data Source initialized");
-
-    // Подключение RabbitMQ
-    await connectRabbitMQ();
-
-    app.listen(PORT, () => console.log(`Property Service running on port ${PORT}`));
+  .then(() => {
+    console.log("Users Service Data Source initialized");
+    app.listen(PORT, HOST, () =>
+      console.log(`Users Service running on http://${HOST}:${PORT}`)
+    );
   })
-  .catch(err =>
-    console.error("Error during Property Service Data Source initialization", err)
-  );
+  .catch(err => console.error("Error during Users Service Data Source initialization", err));
