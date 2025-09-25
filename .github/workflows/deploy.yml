@@ -30,32 +30,29 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            mkdir -p ~/rental_service/users_service
-            cat <<EOT > ~/rental_service/users_service/.env
-PORT=5001
-API_URL=http://${{ secrets.API_HOST }}:5001/api
-DATABASE_URL=${{ secrets.USERS_SERVICE_DB_URL }}
-RABBITMQ_URL=${{ secrets.RABBITMQ_URL }}
-EOT
+            cat <<-EOT > ~/rental_service/users_service/.env
+            PORT=5001
+            API_URL=http://${{ secrets.API_HOST }}:5001/api
+            DATABASE_URL=${{ secrets.USERS_SERVICE_DB_URL }}
+            RABBITMQ_URL=${{ secrets.RABBITMQ_URL }}
+            EOT
             
-            mkdir -p ~/rental_service/property_service
-            cat <<EOT > ~/rental_service/property_service/.env
-PORT=5002
-API_URL=http://${{ secrets.API_HOST }}:5002/api
-DATABASE_URL=${{ secrets.PROPERTY_SERVICE_DB_URL }}
-RABBITMQ_URL=${{ secrets.RABBITMQ_URL }}
-USERS_SERVICE_URL=${{ secrets.USERS_SERVICE_URL }}
-EOT
+            cat <<-EOT > ~/rental_service/property_service/.env
+            PORT=5002
+            API_URL=http://${{ secrets.API_HOST }}:5002/api
+            DATABASE_URL=${{ secrets.PROPERTY_SERVICE_DB_URL }}
+            RABBITMQ_URL=${{ secrets.RABBITMQ_URL }}
+            USERS_SERVICE_URL=${{ secrets.USERS_SERVICE_URL }}
+            EOT
             
-            mkdir -p ~/rental_service/rental_service
-            cat <<EOT > ~/rental_service/rental_service/.env
-PORT=5003
-API_URL=http://${{ secrets.API_HOST }}:5003/api
-DATABASE_URL=${{ secrets.RENTAL_SERVICE_DB_URL }}
-RABBITMQ_URL=${{ secrets.RABBITMQ_URL }}
-USERS_SERVICE_URL=${{ secrets.USERS_SERVICE_URL }}
-PROPERTY_SERVICE_URL=${{ secrets.PROPERTY_SERVICE_URL }}
-EOT
+            cat <<-EOT > ~/rental_service/rental_service/.env
+            PORT=5003
+            API_URL=http://${{ secrets.API_HOST }}:5003/api
+            DATABASE_URL=${{ secrets.RENTAL_SERVICE_DB_URL }}
+            RABBITMQ_URL=${{ secrets.RABBITMQ_URL }}
+            USERS_SERVICE_URL=${{ secrets.USERS_SERVICE_URL }}
+            PROPERTY_SERVICE_URL=${{ secrets.PROPERTY_SERVICE_URL }}
+            EOT
 
     - name: Run Docker Compose on server
       uses: appleboy/ssh-action@v0.1.7
