@@ -20,7 +20,7 @@ const router = Router();
  *         content:
  *           application/json:
  *             schema:
- *               $ref: "#/components/schemas/User"
+ *               $ref: "#/components/schemas/UserCreate"
  *       400:
  *         description: Ошибка валидации или email уже занят
  *
