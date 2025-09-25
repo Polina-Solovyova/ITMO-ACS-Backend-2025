@@ -30,7 +30,8 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            cat <<-EOT > ~/rental_service/users_service/.env
+            mkdir -p ~/rental_service/rental_service/users_service
+            cat <<-EOT > ~/rental_service/rental_service/users_service.env
             PORT=5001
             API_URL=http://${{ secrets.API_HOST }}:5001/api
             DATABASE_URL=${{ secrets.USERS_SERVICE_DB_URL }}
@@ -44,7 +45,8 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            cat <<-EOT > ~/rental_service/property_service/.env
+            mkdir -p ~/rental_service/rental_service/property_service
+            cat <<-EOT > ~/rental_service/rental_service/property_service/.env
             PORT=5002
             API_URL=http://${{ secrets.API_HOST }}:5002/api
             DATABASE_URL=${{ secrets.PROPERTY_SERVICE_DB_URL }}
@@ -59,7 +61,8 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            cat <<-EOT > ~/rental_service/rental_service/.env
+            mkdir -p ~/rental_service/rental_service/rental_service
+            cat <<-EOT > ~/rental_service/rental_service/rental_service/.env
             PORT=5003
             API_URL=http://${{ secrets.API_HOST }}:5003/api
             DATABASE_URL=${{ secrets.RENTAL_SERVICE_DB_URL }}
