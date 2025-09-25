@@ -2,6 +2,9 @@ import { userRepository } from "../repositories/user.repository";
 import { User } from "../entities/User";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
+
+export const JWT_SECRET = crypto.randomBytes(64).toString("hex");
 
 export class AuthService {
   static async register(data: Partial<User>) {
@@ -24,10 +27,11 @@ export class AuthService {
 
     const token = jwt.sign(
       { userId: user.id },
-      process.env.JWT_SECRET || "fallback-secret",
+      JWT_SECRET,
       { expiresIn: "1h" }
     );
 
     return { token, user };
   }
+
 }

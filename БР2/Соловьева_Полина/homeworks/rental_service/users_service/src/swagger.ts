@@ -17,8 +17,15 @@ export const setupSwagger = (app: Express, title: string, port: number) => {
         },
       ],
       components: {
+        securitySchemes: {
+          bearerAuth: {
+            type: "http",
+            scheme: "bearer",
+            bearerFormat: "JWT",
+          },
+        },
         schemas: {
-          User: {
+          UserResponse: {
             type: "object",
             properties: {
               id: { type: "string", format: "uuid" },
@@ -55,13 +62,14 @@ export const setupSwagger = (app: Express, title: string, port: number) => {
             type: "object",
             properties: {
               token: { type: "string" },
-              user: { $ref: "#/components/schemas/User" },
+              user: { $ref: "#/components/schemas/UserResponse" },
             },
           },
         },
       },
     },
-    apis: ["./src/routes/*.ts"],
+    // Подключаем все роутеры, включая подкаталоги
+    apis: ["./src/routes/**/*.ts"],
   };
 
   const specs = swaggerJsdoc(options);
