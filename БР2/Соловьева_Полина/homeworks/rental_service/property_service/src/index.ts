@@ -16,10 +16,15 @@ import { setupSwagger } from "./swagger";
 import "./subscribers/rental.subscriber";
 
 import dotenv from "dotenv";
+
+import cookieParser from "cookie-parser";
+
 dotenv.config();
 
 const app = express();
 app.use(express.json());
+
+app.use(cookieParser());
 
 // Логирование всех запросов
 app.use(loggerMiddleware);

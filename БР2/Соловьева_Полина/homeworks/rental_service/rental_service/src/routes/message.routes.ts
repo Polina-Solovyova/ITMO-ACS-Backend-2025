@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { MessageController } from "../controllers/message.controller";
+import {authMiddleware} from "../middleware/authMiddleware";
 
 const router = Router();
 
@@ -16,6 +17,8 @@ const router = Router();
  *   post:
  *     summary: Создать новое сообщение
  *     tags: [Messages]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -47,7 +50,7 @@ const router = Router();
  *             schema:
  *               $ref: '#/components/schemas/Message'
  */
-router.post("/", MessageController.create);
+router.post("/", authMiddleware, MessageController.create);
 
 /**
  * @swagger
@@ -55,6 +58,8 @@ router.post("/", MessageController.create);
  *   get:
  *     summary: Получить список сообщений
  *     tags: [Messages]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Список сообщений
@@ -65,7 +70,7 @@ router.post("/", MessageController.create);
  *               items:
  *                 $ref: '#/components/schemas/Message'
  */
-router.get("/", MessageController.findAll);
+router.get("/", authMiddleware, MessageController.findAll);
 
 /**
  * @swagger
@@ -73,6 +78,8 @@ router.get("/", MessageController.findAll);
  *   get:
  *     summary: Получить сообщение по ID
  *     tags: [Messages]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -90,7 +97,7 @@ router.get("/", MessageController.findAll);
  *       404:
  *         description: Сообщение не найдено
  */
-router.get("/:id", MessageController.findById);
+router.get("/:id", authMiddleware, MessageController.findById);
 
 /**
  * @swagger
@@ -98,6 +105,8 @@ router.get("/:id", MessageController.findById);
  *   put:
  *     summary: Обновить сообщение
  *     tags: [Messages]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -124,7 +133,7 @@ router.get("/:id", MessageController.findById);
  *       404:
  *         description: Сообщение не найдено
  */
-router.put("/:id", MessageController.update);
+router.put("/:id", authMiddleware, MessageController.update);
 
 /**
  * @swagger
@@ -132,6 +141,8 @@ router.put("/:id", MessageController.update);
  *   delete:
  *     summary: Удалить сообщение
  *     tags: [Messages]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -145,6 +156,6 @@ router.put("/:id", MessageController.update);
  *       404:
  *         description: Сообщение не найдено
  */
-router.delete("/:id", MessageController.delete);
+router.delete("/:id", authMiddleware, MessageController.delete);
 
 export default router;

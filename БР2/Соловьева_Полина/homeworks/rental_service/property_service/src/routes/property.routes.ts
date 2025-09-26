@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { PropertyController } from "../controllers/property.controller";
+import {authMiddleware} from "../middleware/authMiddleware";
 
 const router = Router();
 
@@ -16,6 +17,8 @@ const router = Router();
  *   post:
  *     summary: Создать объект недвижимости
  *     tags: [Properties]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -61,7 +64,7 @@ const router = Router();
  *             schema:
  *               $ref: '#/components/schemas/Property'
  */
-router.post("/", PropertyController.create);
+router.post("/", authMiddleware, PropertyController.create);
 
 /**
  * @swagger
@@ -69,6 +72,8 @@ router.post("/", PropertyController.create);
  *   get:
  *     summary: Получить список объектов недвижимости
  *     tags: [Properties]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Список объектов недвижимости
@@ -79,7 +84,7 @@ router.post("/", PropertyController.create);
  *               items:
  *                 $ref: '#/components/schemas/Property'
  */
-router.get("/", PropertyController.findAll);
+router.get("/", authMiddleware, PropertyController.findAll);
 
 /**
  * @swagger
@@ -87,6 +92,8 @@ router.get("/", PropertyController.findAll);
  *   get:
  *     summary: Получить объект недвижимости по ID
  *     tags: [Properties]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -104,7 +111,7 @@ router.get("/", PropertyController.findAll);
  *       404:
  *         description: Объект не найден
  */
-router.get("/:id", PropertyController.findById);
+router.get("/:id", authMiddleware, PropertyController.findById);
 
 /**
  * @swagger
@@ -112,6 +119,8 @@ router.get("/:id", PropertyController.findById);
  *   put:
  *     summary: Обновить объект недвижимости
  *     tags: [Properties]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -156,8 +165,8 @@ router.get("/:id", PropertyController.findById);
  *       404:
  *         description: Объект не найден
  */
-router.put("/:id", PropertyController.update);
+router.put("/:id", authMiddleware, PropertyController.update);
 
-router.delete("/:id", PropertyController.delete);
+router.delete("/:id", authMiddleware, PropertyController.delete);
 
 export default router;

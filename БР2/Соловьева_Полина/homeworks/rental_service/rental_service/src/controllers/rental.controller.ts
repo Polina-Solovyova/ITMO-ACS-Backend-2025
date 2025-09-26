@@ -1,17 +1,23 @@
+// RentalController.ts
 import { Request, Response } from "express";
 import { RentalService } from "../services/rental.service";
 import { publishToQueue } from "../config/rabbit";
+import { AuthRequest } from "../middleware/authMiddleware";
 
 export class RentalController {
-  static async create(req: Request, res: Response) {
+  static async create(req: AuthRequest, res: Response) {
     try {
-      const { propertyId, tenantId, ...rest } = req.body;
+      const { propertyId, ...rest } = req.body;
+      const token = req.headers.authorization?.split(" ")[1]; // Bearer <token>
 
-      const saved = await RentalService.create({
-        ...rest,
-        property_id: propertyId,
-        tenant_id: tenantId,
-      });
+      const saved = await RentalService.create(
+        {
+          ...rest,
+          property_id: propertyId,
+          tenant_id: req.user!.id,
+        },
+        token!
+      );
 
       if (saved.status === "accepted") {
         await publishToQueue("rental_events", {
@@ -19,7 +25,7 @@ export class RentalController {
           payload: {
             id: saved.id,
             propertyId,
-            renterId: tenantId,
+            renterId: req.user!.id,
             startDate: saved.start_date,
             endDate: saved.end_date,
           },
@@ -32,25 +38,31 @@ export class RentalController {
     }
   }
 
-  static async update(req: Request, res: Response) {
+  static async update(req: AuthRequest, res: Response) {
     try {
-      const { propertyId, tenantId, ...rest } = req.body;
+      const { propertyId, ...rest } = req.body;
+      const token = req.headers.authorization?.split(" ")[1];
 
-      const updated = await RentalService.update(req.params.id, {
-        ...rest,
-        property_id: propertyId,
-        tenant_id: tenantId,
-      });
+      const updated = await RentalService.update(
+        req.params.id,
+        {
+          ...rest,
+          property_id: propertyId,
+          tenant_id: req.user!.id,
+        },
+        token!
+      );
 
       if (!updated) return res.status(404).json({ message: "Rental not found" });
 
+      // события очереди
       if (updated.status === "accepted") {
         await publishToQueue("rental_events", {
           type: "rental_created",
           payload: {
             id: updated.id,
             propertyId,
-            renterId: tenantId,
+            renterId: req.user!.id,
             startDate: updated.start_date,
             endDate: updated.end_date,
           },
@@ -63,7 +75,7 @@ export class RentalController {
           payload: {
             rentalId: updated.id,
             propertyId,
-            renterId: tenantId,
+            renterId: req.user!.id,
           },
         });
       }
@@ -77,6 +89,7 @@ export class RentalController {
   static async delete(req: Request, res: Response) {
     try {
       const rental = await RentalService.findById(req.params.id);
+      const token = req.headers.authorization?.split(" ")[1];
       const result = await RentalService.delete(req.params.id);
 
       if (rental) {
@@ -96,7 +109,7 @@ export class RentalController {
     }
   }
 
-    static async findAll(req: Request, res: Response) {
+  static async findAll(req: Request, res: Response) {
     try {
       const { skip = 0, take = 20 } = req.query as any;
       const rentals = await RentalService.findAll(Number(skip), Number(take));
@@ -115,5 +128,4 @@ export class RentalController {
       res.status(500).json({ error: err.message });
     }
   }
-
 }

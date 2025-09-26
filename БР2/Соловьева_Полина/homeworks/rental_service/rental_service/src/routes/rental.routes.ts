@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { RentalController } from "../controllers/rental.controller";
+import {authMiddleware} from "../middleware/authMiddleware";
 
 const router = Router();
 
@@ -16,6 +17,8 @@ const router = Router();
  *   post:
  *     summary: Создать аренду
  *     tags: [Rentals]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -51,7 +54,7 @@ const router = Router();
  *             schema:
  *               $ref: '#/components/schemas/Rental'
  */
-router.post("/", RentalController.create);
+router.post("/", authMiddleware, RentalController.create);
 
 /**
  * @swagger
@@ -59,6 +62,8 @@ router.post("/", RentalController.create);
  *   get:
  *     summary: Получить список аренд
  *     tags: [Rentals]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Список аренд
@@ -69,7 +74,7 @@ router.post("/", RentalController.create);
  *               items:
  *                 $ref: '#/components/schemas/Rental'
  */
-router.get("/", RentalController.findAll);
+router.get("/", authMiddleware, RentalController.findAll);
 
 /**
  * @swagger
@@ -77,6 +82,8 @@ router.get("/", RentalController.findAll);
  *   get:
  *     summary: Получить аренду по ID
  *     tags: [Rentals]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -94,7 +101,7 @@ router.get("/", RentalController.findAll);
  *       404:
  *         description: Аренда не найдена
  */
-router.get("/:id", RentalController.findById);
+router.get("/:id", authMiddleware, RentalController.findById);
 
 /**
  * @swagger
@@ -102,6 +109,8 @@ router.get("/:id", RentalController.findById);
  *   put:
  *     summary: Обновить аренду
  *     tags: [Rentals]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -134,8 +143,8 @@ router.get("/:id", RentalController.findById);
  *       404:
  *         description: Аренда не найдена
  */
-router.put("/:id", RentalController.update);
+router.put("/:id", authMiddleware, RentalController.update);
 
-router.delete("/:id", RentalController.delete);
+router.delete("/:id", authMiddleware, RentalController.delete);
 
 export default router;

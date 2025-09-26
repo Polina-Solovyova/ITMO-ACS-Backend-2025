@@ -4,11 +4,11 @@ import { userClient } from "../clients/userClient";
 import { RentalService } from "./rental.service";
 
 export class MessageService {
-  static async create(data: Partial<Message>) {
+  static async create(data: Partial<Message>, token: string) {
     if (!data.sender_id || !data.receiver_id) throw new Error("Sender and Receiver ID required");
 
-    const sender = await userClient.getUserById(data.sender_id);
-    const receiver = await userClient.getUserById(data.receiver_id);
+    const sender = await userClient.getUserById(data.sender_id, token);
+    const receiver = await userClient.getUserById(data.receiver_id, token);
     if (!sender || !receiver) throw new Error("Sender or Receiver not found");
 
     let rental_id: string | null = null;
@@ -37,18 +37,18 @@ export class MessageService {
     return await messageRepository.findOneBy({ id });
   }
 
-  static async update(id: string, data: Partial<Message>) {
+  static async update(id: string, data: Partial<Message>, token: string) {
     const entity = await messageRepository.findOneBy({ id });
     if (!entity) return null;
 
     if (data.sender_id) {
-      const sender = await userClient.getUserById(data.sender_id);
+      const sender = await userClient.getUserById(data.sender_id, token);
       if (!sender) throw new Error("Sender not found");
       data.sender_id = sender.id;
     }
 
     if (data.receiver_id) {
-      const receiver = await userClient.getUserById(data.receiver_id);
+      const receiver = await userClient.getUserById(data.receiver_id, token);
       if (!receiver) throw new Error("Receiver not found");
       data.receiver_id = receiver.id;
     }

@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { AmenityController } from "../controllers/amenity.controller";
+import {authMiddleware} from "../middleware/authMiddleware";
 
 const router = Router();
 
@@ -16,6 +17,8 @@ const router = Router();
  *   post:
  *     summary: Создать удобство
  *     tags: [Amenities]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -37,7 +40,7 @@ const router = Router();
  *             schema:
  *               $ref: '#/components/schemas/Amenity'
  */
-router.post("/", AmenityController.create);
+router.post("/", authMiddleware, AmenityController.create);
 
 /**
  * @swagger
@@ -45,6 +48,8 @@ router.post("/", AmenityController.create);
  *   get:
  *     summary: Получить список удобств
  *     tags: [Amenities]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Список удобств
@@ -55,7 +60,7 @@ router.post("/", AmenityController.create);
  *               items:
  *                 $ref: '#/components/schemas/Amenity'
  */
-router.get("/", AmenityController.findAll);
+router.get("/", authMiddleware, AmenityController.findAll);
 
 /**
  * @swagger
@@ -63,6 +68,8 @@ router.get("/", AmenityController.findAll);
  *   get:
  *     summary: Получить удобство по ID
  *     tags: [Amenities]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -80,7 +87,7 @@ router.get("/", AmenityController.findAll);
  *       404:
  *         description: Удобство не найдено
  */
-router.get("/:id", AmenityController.findById);
+router.get("/:id", authMiddleware, AmenityController.findById);
 
 /**
  * @swagger
@@ -88,6 +95,8 @@ router.get("/:id", AmenityController.findById);
  *   put:
  *     summary: Обновить удобство
  *     tags: [Amenities]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -116,7 +125,7 @@ router.get("/:id", AmenityController.findById);
  *       404:
  *         description: Удобство не найдено
  */
-router.put("/:id", AmenityController.update);
+router.put("/:id", authMiddleware, AmenityController.update);
 
 /**
  * @swagger
@@ -124,6 +133,8 @@ router.put("/:id", AmenityController.update);
  *   delete:
  *     summary: Удалить удобство
  *     tags: [Amenities]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -137,6 +148,6 @@ router.put("/:id", AmenityController.update);
  *       404:
  *         description: Удобство не найдено
  */
-router.delete("/:id", AmenityController.delete);
+router.delete("/:id", authMiddleware, AmenityController.delete);
 
 export default router;

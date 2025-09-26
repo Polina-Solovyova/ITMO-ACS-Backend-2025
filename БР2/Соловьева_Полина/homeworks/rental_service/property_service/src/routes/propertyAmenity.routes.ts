@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { PropertyAmenityController } from "../controllers/propertyAmenity.controller";
+import {authMiddleware} from "../middleware/authMiddleware";
 
 const router = Router();
 
@@ -16,6 +17,8 @@ const router = Router();
  *   post:
  *     summary: Создать объект удобств для недвижимости
  *     tags: [PropertyAmenities]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -40,7 +43,7 @@ const router = Router();
  *             schema:
  *               $ref: '#/components/schemas/PropertyAmenity'
  */
-router.post("/", PropertyAmenityController.create);
+router.post("/", authMiddleware, PropertyAmenityController.create);
 
 /**
  * @swagger
@@ -48,6 +51,8 @@ router.post("/", PropertyAmenityController.create);
  *   get:
  *     summary: Получить список объектов удобств для недвижимости
  *     tags: [PropertyAmenities]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Список объектов удобств для недвижимости
@@ -58,7 +63,7 @@ router.post("/", PropertyAmenityController.create);
  *               items:
  *                 $ref: '#/components/schemas/PropertyAmenity'
  */
-router.get("/", PropertyAmenityController.findAll);
+router.get("/", authMiddleware, PropertyAmenityController.findAll);
 
 /**
  * @swagger
@@ -66,6 +71,8 @@ router.get("/", PropertyAmenityController.findAll);
  *   get:
  *     summary: Получить объект удобств для недвижимости по ID
  *     tags: [PropertyAmenities]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -83,7 +90,7 @@ router.get("/", PropertyAmenityController.findAll);
  *       404:
  *         description: Объект не найден
  */
-router.get("/:id", PropertyAmenityController.findById);
+router.get("/:id", authMiddleware, PropertyAmenityController.findById);
 
 /**
  * @swagger
@@ -91,6 +98,8 @@ router.get("/:id", PropertyAmenityController.findById);
  *   put:
  *     summary: Обновить объект удобств для недвижимости
  *     tags: [PropertyAmenities]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -121,7 +130,7 @@ router.get("/:id", PropertyAmenityController.findById);
  *       404:
  *         description: Объект не найден
  */
-router.put("/:id", PropertyAmenityController.update);
+router.put("/:id", authMiddleware, PropertyAmenityController.update);
 
 /**
  * @swagger
@@ -129,6 +138,8 @@ router.put("/:id", PropertyAmenityController.update);
  *   delete:
  *     summary: Удалить объект удобств для недвижимости
  *     tags: [PropertyAmenities]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -142,6 +153,6 @@ router.put("/:id", PropertyAmenityController.update);
  *       404:
  *         description: Объект не найден
  */
-router.delete("/:id", PropertyAmenityController.delete);
+router.delete("/:id", authMiddleware, PropertyAmenityController.delete);
 
 export default router;

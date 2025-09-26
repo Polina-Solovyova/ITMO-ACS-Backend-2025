@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { ReviewController } from "../controllers/review.controller";
+import {authMiddleware} from "../middleware/authMiddleware";
 
 const router = Router();
 
@@ -16,6 +17,8 @@ const router = Router();
  *   post:
  *     summary: Создать отзыв
  *     tags: [Reviews]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -48,7 +51,7 @@ const router = Router();
  *             schema:
  *               $ref: '#/components/schemas/Review'
  */
-router.post("/", ReviewController.create);
+router.post("/", authMiddleware, ReviewController.create);
 
 /**
  * @swagger
@@ -56,6 +59,8 @@ router.post("/", ReviewController.create);
  *   get:
  *     summary: Получить список отзывов
  *     tags: [Reviews]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Список отзывов
@@ -66,7 +71,7 @@ router.post("/", ReviewController.create);
  *               items:
  *                 $ref: '#/components/schemas/Review'
  */
-router.get("/", ReviewController.findAll);
+router.get("/", authMiddleware, ReviewController.findAll);
 
 /**
  * @swagger
@@ -74,6 +79,8 @@ router.get("/", ReviewController.findAll);
  *   get:
  *     summary: Получить отзыв по ID
  *     tags: [Reviews]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -91,7 +98,7 @@ router.get("/", ReviewController.findAll);
  *       404:
  *         description: Отзыв не найден
  */
-router.get("/:id", ReviewController.findById);
+router.get("/:id", authMiddleware, ReviewController.findById);
 
 /**
  * @swagger
@@ -99,6 +106,8 @@ router.get("/:id", ReviewController.findById);
  *   put:
  *     summary: Обновить отзыв
  *     tags: [Reviews]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -129,7 +138,7 @@ router.get("/:id", ReviewController.findById);
  *       404:
  *         description: Отзыв не найден
  */
-router.put("/:id", ReviewController.update);
+router.put("/:id", authMiddleware, ReviewController.update);
 
 /**
  * @swagger
@@ -137,6 +146,8 @@ router.put("/:id", ReviewController.update);
  *   delete:
  *     summary: Удалить отзыв
  *     tags: [Reviews]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -150,6 +161,6 @@ router.put("/:id", ReviewController.update);
  *       404:
  *         description: Отзыв не найден
  */
-router.delete("/:id", ReviewController.delete);
+router.delete("/:id", authMiddleware, ReviewController.delete);
 
 export default router;

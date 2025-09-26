@@ -2,17 +2,16 @@ import axios from "axios";
 
 class UserClient {
   private baseUrl: string;
-  private token: string;
 
   constructor() {
-    this.baseUrl = process.env.USERS_SERVICE_URL || "http://users-service:5001/api/users";
-    this.token = process.env.INTERNAL_SERVICE_TOKEN || "supersecretinternaltoken123";
+    this.baseUrl =
+      process.env.USERS_SERVICE_URL || "http://users-service:5001/api/users";
   }
 
-  async getUserById(userId: string) {
+  async getUserById(userId: string, token: string) {
     try {
       const response = await axios.get(`${this.baseUrl}/${userId}`, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${token}` },
       });
       return response.data;
     } catch (error: any) {
@@ -20,8 +19,6 @@ class UserClient {
       throw new Error("Failed to fetch user");
     }
   }
-
 }
 
 export const userClient = new UserClient();
-

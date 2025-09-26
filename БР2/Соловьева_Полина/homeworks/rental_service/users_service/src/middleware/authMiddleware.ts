@@ -11,12 +11,6 @@ export interface AuthRequest extends Request {
 export const authMiddleware = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const token = req.header("Authorization")?.replace("Bearer ", "");
-
-    // Разрешаем внутренний сервис-токен
-    if (token === process.env.INTERNAL_SERVICE_TOKEN) {
-      return next();
-    }
-
     if (!token) return res.status(401).json({ message: "Access denied. No token provided." });
 
     const decoded = jwt.verify(token, JWT_SECRET) as any;
@@ -32,4 +26,3 @@ export const authMiddleware = async (req: AuthRequest, res: Response, next: Next
     res.status(401).json({ message: "Invalid token." });
   }
 };
-

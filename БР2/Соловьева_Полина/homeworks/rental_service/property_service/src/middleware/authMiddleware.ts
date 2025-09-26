@@ -1,23 +1,21 @@
+// middleware/auth.ts
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import { userClient } from "../clients/userClient";
 
 export interface AuthRequest extends Request {
-  user?: any;
+  user?: { id: string };
 }
 
-export const authMiddleware = async (req: AuthRequest, res: Response, next: NextFunction) => {
+export const authMiddleware = (req: AuthRequest, res: Response, next: NextFunction) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) return res.status(401).json({ message: "No token provided" });
+
+  const token = authHeader.split(" ")[1];
   try {
-    const token = req.header("Authorization")?.replace("Bearer ", "");
-    if (!token) return res.status(401).json({ message: "Access denied. No token provided." });
-
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || "fallback-secret") as any;
-    const user = await userClient.getUserById(decoded.userId);
-    if (!user) return res.status(401).json({ message: "Invalid token." });
-
-    req.user = user;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { id: string };
+    req.user = { id: decoded.id };
     next();
-  } catch (error) {
-    res.status(401).json({ message: "Invalid token." });
+  } catch (err) {
+    return res.status(401).json({ message: "Invalid token" });
   }
 };

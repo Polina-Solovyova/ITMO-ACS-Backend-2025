@@ -4,13 +4,13 @@ import { RentalService } from "./rental.service";
 import { userClient } from "../clients/userClient";
 
 export class ReviewService {
-  static async create(data: Partial<Review>) {
+  static async create(data: Partial<Review>, token: string) {
     if (!data.rental_id || !data.reviewer_id) throw new Error("Rental and Reviewer ID required");
 
     const rental = await RentalService.findById(data.rental_id);
     if (!rental) throw new Error("Rental not found");
 
-    const reviewer = await userClient.getUserById(data.reviewer_id);
+    const reviewer = await userClient.getUserById(data.reviewer_id, token);
     if (!reviewer) throw new Error("Reviewer not found");
 
     const entity = reviewRepository.create({
@@ -30,7 +30,7 @@ export class ReviewService {
     return await reviewRepository.findOneBy({ id });
   }
 
-  static async update(id: string, data: Partial<Review>) {
+  static async update(id: string, data: Partial<Review>, token: string) {
     const entity = await reviewRepository.findOneBy({ id });
     if (!entity) return null;
 
@@ -41,7 +41,7 @@ export class ReviewService {
     }
 
     if (data.reviewer_id) {
-      const reviewer = await userClient.getUserById(data.reviewer_id);
+      const reviewer = await userClient.getUserById(data.reviewer_id, token);
       if (!reviewer) throw new Error("Reviewer not found");
       data.reviewer_id = reviewer.id;
     }

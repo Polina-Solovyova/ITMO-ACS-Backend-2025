@@ -12,9 +12,16 @@ export const setupSwagger = (app: Express, title: string, port: number) => {
         description: `${title} - RESTful API`,
       },
       servers: [
-        { url: process.env.API_URL || 'http://localhost:5002' }
+        { url: process.env.API_URL || `http://localhost:${port}` }
       ],
       components: {
+        securitySchemes: {
+          bearerAuth: {
+            type: "http",
+            scheme: "bearer",
+            bearerFormat: "JWT",
+          },
+        },
         schemas: {
           Property: {
             type: "object",
@@ -54,8 +61,13 @@ export const setupSwagger = (app: Express, title: string, port: number) => {
           },
         },
       },
+      security: [
+        {
+          bearerAuth: [],
+        },
+      ],
     },
-    apis: ["./src/routes/*.ts"], // Пути к маршрутам
+    apis: ["./src/routes/*.ts"],
   };
 
   const specs = swaggerJsdoc(options);
